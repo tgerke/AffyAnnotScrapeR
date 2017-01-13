@@ -25,7 +25,7 @@ annot <- fread("/Volumes/Lab_Gerke/ukb/AXIOM/Axiom_UKB_WCSG.na35.annot.csv",
 #######################################################################################
 # create lists of data frames which contain gene level annotation 
 
-# x will be annot[,"Associated Gene"]
+# x will be annot$'Associated Gene'
 getgeneannot <- function(x) {
    list1 <- sapply(x, function(y) strsplit(y, " /// "), USE.NAMES=FALSE)
    list1 <- lapply(list1, function(x) {
@@ -38,6 +38,6 @@ getgeneannot <- function(x) {
       return(dat)
    })
 }
-geneannot <- sapply(annot[,"Associated Gene"], getgeneannot, USE.NAMES=FALSE)
-names(geneannot) <- annot[,"Probe Set ID"]
+geneannot <- sapply(annot$'Associated Gene', getgeneannot, USE.NAMES=FALSE)
+names(geneannot) <- annot$'Probe Set ID'
 
