@@ -4,7 +4,10 @@
 #######################################################################################
 # set directory, load libraries
 
-#setwd("~/Documents/affy") 
+# Mac
+setwd("/Volumes/Lab_Gerke/ukb/AXIOM/") 
+# Windows
+setwd("M:/lab/Lab_Gerke/ukb/AXIOM/")
 #obviously localy machine dependent for now (can't post the Affy data)
 
 library(Biobase)
@@ -16,10 +19,10 @@ options(stringsAsFactors=FALSE)
 # load transcript cluster annotation, downloaded from Affymetrix.com 01/10/2017
 
 #windows
-annot <- fread("M:/lab/Lab_Gerke/ukb/AXIOM/Axiom_UKB_WCSG.na35.annot.csv", 
+annot <- fread("Axiom_UKB_WCSG.na35.annot.csv", 
                sep=",", header=TRUE, skip=19, showProgress=FALSE)
 #mac
-annot <- fread("/Volumes/Lab_Gerke/ukb/AXIOM/Axiom_UKB_WCSG.na35.annot.csv", 
+annot <- fread("Axiom_UKB_WCSG.na35.annot.csv", 
                sep=",", header=TRUE, skip=19, showProgress=FALSE)
 
 #######################################################################################
@@ -40,4 +43,9 @@ getgeneannot <- function(x) {
 }
 geneannot <- sapply(annot$'Associated Gene', getgeneannot, USE.NAMES=FALSE)
 names(geneannot) <- annot$'Probe Set ID'
+
+annot[,'Associated Gene':=NULL]
+
+out <- list(annot, geneannot)
+save(out, file="AxiomUKB.RData")
 
