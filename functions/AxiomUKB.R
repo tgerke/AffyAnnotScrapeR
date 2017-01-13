@@ -23,35 +23,12 @@ annot <- fread("/Volumes/Lab_Gerke/ukb/AXIOM/Axiom_UKB_WCSG.na35.annot.csv",
                sep=",", header=TRUE, skip=19, showProgress=FALSE)
 
 #######################################################################################
-# create lists of data frames which contain mRNA and gene level annotation 
+# create lists of data frames which contain gene level annotation 
 
-# x will be annot$mrna_assignment
-# not in AXIOM arrays
-getmrnaannot <- function(x) {
-   list1 <- sapply(x, function(y) strsplit(y, " /// "), USE.NAMES=FALSE)
-   list1 <- lapply(list1, function(x) {
-      anytrunc <- grep("TRUNCATED", x)
-      if (length(anytrunc)>0) {x <- x[-anytrunc]}
-      strsplit(x, " // ")
-   })
-   list2 <- lapply(list1, function(x) {
-      dat <- as.data.frame(matrix(unlist(x), nrow=length(x), byrow=TRUE), stringsAsFactors=FALSE)
-      if (ncol(dat)==1) {dat <- data.frame(t(rep("---", 9)))}
-      names(dat) <- c("accession", "source_name", "description", "assignment_seqname", "assignment_score",
-                      "assignment_coverage", "direct_probes", "possible_probes", "assignment_xhyb")
-      return(dat)
-   })
-}
-mrnaannot <- sapply(annot$mrna_assignment, getmrnaannot, USE.NAMES=FALSE)
-names(mrnaannot) <- annot$transcript_cluster_id
-
-# x will be annot$`Associated Gene`
-
+# x will be annot[,"Associated Gene"]
 getgeneannot <- function(x) {
    list1 <- sapply(x, function(y) strsplit(y, " /// "), USE.NAMES=FALSE)
    list1 <- lapply(list1, function(x) {
-      anytrunc <- grep("TRUNCATED", x)
-      if (length(anytrunc)>0) {x <- x[-anytrunc]}
       strsplit(x, " // ")
    })
    list2 <- lapply(list1, function(x) {
@@ -61,6 +38,6 @@ getgeneannot <- function(x) {
       return(dat)
    })
 }
-geneannot <- sapply(annot$`Associated Gene`, getgeneannot, USE.NAMES=FALSE)
-names(geneannot) <- annot$`Probe Set ID`
+geneannot <- sapply(annot[,"Associated Gene"], getgeneannot, USE.NAMES=FALSE)
+names(geneannot) <- annot[,"Probe Set ID"]
 
