@@ -58,3 +58,7 @@ getgeneannot <- function(x) {
 geneannot <- sapply(annot$gene_assignment, getgeneannot, USE.NAMES=FALSE)
 names(geneannot) <- annot$transcript_cluster_id
 
+annot <- annot[,c("mrna_assignment", "gene_assignment"):=NULL]
+out <- list(annot, mrnaannot, geneannot)
+
+save(out, file="HuGene10STtranscript.RData")
