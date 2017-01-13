@@ -25,9 +25,6 @@ annot <- fread("HuEx-1_0-st-v2_download011317/HuEx-1_0-st-v2.na36.hg19.probeset.
 getmrnaannot <- function(x) {
    list1 <- sapply(x, function(y) strsplit(y, " /// "), USE.NAMES=FALSE)
    list1 <- lapply(list1, function(x) {
-      # no TRUNCATED fields in the HuExon file
-      #anytrunc <- grep("TRUNCATED", x)
-      #if (length(anytrunc)>0) {x <- x[-anytrunc]}
       strsplit(x, " // ")
    })
    list2 <- lapply(list1, function(x) {
@@ -41,15 +38,10 @@ getmrnaannot <- function(x) {
 mrnaannot <- sapply(annot$mrna_assignment, getmrnaannot, USE.NAMES=FALSE)
 names(mrnaannot) <- annot$probeset_id
 
-temp <- lapply(list2)
-
 # x will be annot$gene_assignment
 getgeneannot <- function(x) {
    list1 <- sapply(x, function(y) strsplit(y, " /// "), USE.NAMES=FALSE)
    list1 <- lapply(list1, function(x) {
-      # no TRUNCATED fields in the HuExon file
-      #anytrunc <- grep("TRUNCATED", x)
-      #if (length(anytrunc)>0) {x <- x[-anytrunc]}
       strsplit(x, " // ")
    })
    list2 <- lapply(list1, function(x) {
@@ -62,3 +54,7 @@ getgeneannot <- function(x) {
 geneannot <- sapply(annot$gene_assignment, getgeneannot, USE.NAMES=FALSE)
 names(geneannot) <- annot$probeset_id
 
+annot <- annot[,c("mrna_assignment","gene_assignment"):=NULL]
+out <- list(annot, mrnaannot, geneannot)
+
+save(out, file="HuExon10STprobeset.RData")
